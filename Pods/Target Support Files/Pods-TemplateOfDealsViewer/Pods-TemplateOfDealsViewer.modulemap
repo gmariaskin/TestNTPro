@@ -1,0 +1,6 @@
+framework module Pods_TemplateOfDealsViewer {
+  umbrella header "Pods-TemplateOfDealsViewer-umbrella.h"
+
+  export *
+  module * { export * }
+}
