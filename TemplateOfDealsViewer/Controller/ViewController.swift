@@ -5,14 +5,15 @@ class ViewController: UIViewController {
     //MARK: - Properties
     
     enum CurrentSorting {
-        case up
         case down
+        case up
     }
     
     private let mainView = MainTableView()
     private let server = Server()
     private var model: [Deal] = []
     private var currentSorting: CurrentSorting = .down
+    
     
     
     //MARK: - Lifecycle
@@ -35,63 +36,66 @@ class ViewController: UIViewController {
         mainView.filterPanel.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
         mainView.filterPanel.addTarget(self, action: #selector(segmentTapped), for: .touchDown)
         
-        server.subscribeToDeals { deals in
-            self.model.append(contentsOf: deals)
-            self.mainView.tableView.reloadData()
-        }
-        
-        self.model.sort(by: {$0.dateModifier < $1.dateModifier})
         self.mainView.tableView.reloadData()
         
+        fetchData()
     }
     
     //MARK: - Actions
     
+    private func fetchData() {
+        server.subscribeToDeals { deals in
+            self.model.append(contentsOf: deals)
+            self.sortModel()
+            self.mainView.tableView.reloadData()
+        }
+    }
+    
+    private func sortModel() {
+        
+        switch (mainView.filterPanel.selectedSegmentIndex, currentSorting) {
+        case (0, .up):
+            model.sort(by: {$0.dateModifier < $1.dateModifier})
+        case (0, .down):
+            model.sort(by: {$0.dateModifier > $1.dateModifier})
+        case (1, .up):
+            model.sort(by: {$0.instrumentName < $1.instrumentName})
+        case (1, .down):
+            model.sort(by: {$0.instrumentName > $1.instrumentName})
+        case (2, .up):
+            model.sort(by: {$0.price < $1.price})
+        case (2, .down):
+            model.sort(by: {$0.price > $1.price})
+        case (3, .up):
+            model.sort(by: {$0.amount < $1.amount})
+        case (3, .down):
+            model.sort(by: {$0.amount > $1.amount})
+        case (4, .up):
+            model.sort(by: {$0.side < $1.side})
+        case (4, .down):
+            model.sort(by: {$0.side > $1.side})
+        default:
+            break
+        }
+    }
+    
     @objc private func segmentChanged(_ sender: UISegmentedControl) {
-
-        segmentTapped(sender)
+        
+        toggleSortingOrder()
+        sortModel()
+        mainView.tableView.reloadData()
     }
     
     @objc private func segmentTapped(_ sender: UISegmentedControl) {
         
-        switch currentSorting {
-        case .up:
-            switch sender.selectedSegmentIndex {
-            case 0:
-                model.sort(by: {$0.dateModifier < $1.dateModifier})
-            case 1:
-                model.sort(by: {$0.instrumentName < $1.instrumentName})
-            case 2:
-                model.sort(by: {$0.price < $1.price})
-            case 3:
-                model.sort(by: {$0.amount < $1.amount})
-            case 4:
-                model.sort(by: {$0.side < $1.side})
-            default:
-                break
-            }
-            mainView.tableView.reloadData()
-            currentSorting = .down
-        case .down:
-            switch sender.selectedSegmentIndex {
-            case 0:
-                model.sort(by: {$0.dateModifier > $1.dateModifier})
-            case 1:
-                model.sort(by: {$0.instrumentName > $1.instrumentName})
-            case 2:
-                model.sort(by: {$0.price > $1.price})
-            case 3:
-                model.sort(by: {$0.amount > $1.amount})
-
-            case 4:
-                model.sort(by: {$0.side > $1.side})
-            default:
-                break
-            }
-            mainView.tableView.reloadData()
-            currentSorting = .up
-        default: break
-        }
+        toggleSortingOrder()
+        sortModel()
+        mainView.tableView.reloadData()
+    }
+    
+    private func toggleSortingOrder() {
+        
+        currentSorting = (currentSorting == .down) ? .up : .down
     }
 }
 
@@ -114,8 +118,8 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-      let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: HeaderCell.reuseIidentifier) as! HeaderCell
-      return cell
+        let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: HeaderCell.reuseIidentifier) as! HeaderCell
+        return cell
     }
 }
 
