@@ -82,19 +82,20 @@ class ViewController: UIViewController {
     
     @objc private func segmentChanged(_ sender: UISegmentedControl) {
         
-        toggleSortingOrder()
-        sortModel()
-        mainView.tableView.reloadData()
+        changeSortingDirection()
     }
     
     @objc private func segmentTapped(_ sender: UISegmentedControl) {
         
-        toggleSortingOrder()
-        sortModel()
-        mainView.tableView.reloadData()
+        changeSortingDirection()
     }
     
     @objc private func sortingButtonTapped() {
+        
+        changeSortingDirection()
+    }
+    
+    private func changeSortingDirection() {
         
         toggleSortingOrder()
         sortModel()
