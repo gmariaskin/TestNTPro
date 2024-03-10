@@ -35,8 +35,7 @@ class ViewController: UIViewController {
         
         mainView.filterPanel.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
         mainView.filterPanel.addTarget(self, action: #selector(segmentTapped), for: .touchDown)
-        
-        self.mainView.tableView.reloadData()
+        mainView.filterPanel.selectedSegmentIndex = 0
         
         fetchData()
     }
