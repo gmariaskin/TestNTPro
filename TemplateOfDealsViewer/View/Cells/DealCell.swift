@@ -23,8 +23,11 @@ class DealCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    
+    
     func configure(with deal: Deal) {
-        self.dateLabel.text = String(deal.dateModifier.description)
+        
+        self.dateLabel.text = String(deal.dateModifier.formatted())
         self.priceLabel.text = String(deal.price.roundToDecimal(2))
         self.amountLabel.text = String(Int(deal.amount))
         
