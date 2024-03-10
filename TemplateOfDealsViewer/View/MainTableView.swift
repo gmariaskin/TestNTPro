@@ -22,6 +22,15 @@ class MainTableView: UIView {
         return obj
     }()
     
+    let sortingButton: UIButton = {
+        let obj = UIButton()
+        
+        obj.layer.backgroundColor = UIColor.gray.cgColor
+        obj.layer.cornerRadius = 10
+        obj.setImage(UIImage(named: "arrowDown"), for: .normal)
+        return obj
+    }()
+    
     
     //MARK: - Lifecycle
     
@@ -40,6 +49,9 @@ class MainTableView: UIView {
         
         addSubview(tableView)
         addSubview(filterPanel)
+        addSubview(sortingButton)
+        
+       
         
         filterPanel.insertSegment(withTitle: "Date", at: 0, animated: true)
         filterPanel.insertSegment(withTitle: "Instrument", at: 1, animated: true)
@@ -50,9 +62,17 @@ class MainTableView: UIView {
 
         
         filterPanel.snp.makeConstraints { make in
-            make.horizontalEdges.equalToSuperview()
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview().inset(50)
             make.top.equalToSuperview().offset(100)
             make.height.equalTo(50)
+        }
+        
+        sortingButton.snp.makeConstraints { make in
+            make.leading.equalTo(filterPanel.snp.trailing)
+            make.top.equalToSuperview().offset(100)
+            make.trailing.equalToSuperview()
+            make.size.equalTo(50)
         }
         
         tableView.snp.makeConstraints { make in

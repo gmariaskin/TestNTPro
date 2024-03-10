@@ -37,6 +37,8 @@ class ViewController: UIViewController {
         mainView.filterPanel.addTarget(self, action: #selector(segmentTapped), for: .touchDown)
         mainView.filterPanel.selectedSegmentIndex = 0
         
+        mainView.sortingButton.addTarget(self, action: #selector(sortingButtonTapped), for: .touchUpInside)
+        
         fetchData()
     }
     
@@ -92,9 +94,18 @@ class ViewController: UIViewController {
         mainView.tableView.reloadData()
     }
     
+    @objc private func sortingButtonTapped() {
+        
+        toggleSortingOrder()
+        sortModel()
+        mainView.tableView.reloadData()
+    }
+    
     private func toggleSortingOrder() {
         
         currentSorting = (currentSorting == .down) ? .up : .down
+        let currentImage = (currentSorting == .up) ? UIImage(named: "arrowUp") : UIImage(named: "arrowDown")
+        mainView.sortingButton.setImage(currentImage, for: .normal)
     }
 }
 
