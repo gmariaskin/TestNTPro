@@ -1,6 +1,6 @@
 import UIKit
 
-class DealViewController: UIViewController {
+class DealListViewController: UIViewController {
     
     //MARK: - Properties
     
@@ -44,7 +44,7 @@ class DealViewController: UIViewController {
 
 //MARK: - UITableViewDataSource, UITableViewDelegate
 
-extension DealViewController: UITableViewDataSource, UITableViewDelegate {
+extension DealListViewController: UITableViewDataSource, UITableViewDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -67,7 +67,7 @@ extension DealViewController: UITableViewDataSource, UITableViewDelegate {
 
 //MARK: - Private extension
 
-private extension DealViewController {
+private extension DealListViewController {
     
     func setup() {
         
