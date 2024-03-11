@@ -15,16 +15,6 @@ class DealCell: UITableViewCell {
         // Initialization code
     }
     
-    
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-    
-    
-    
     func configure(with deal: Deal) {
         
         self.dateLabel.text = String(deal.dateModifier.formatted())
@@ -44,3 +34,5 @@ class DealCell: UITableViewCell {
     }
 
 }
+
+

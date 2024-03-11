@@ -1,15 +1,24 @@
 import UIKit
 
-class ViewController: UIViewController {
+class DealViewController: UIViewController {
     
     //MARK: - Properties
     
     enum CurrentSorting {
         case down
         case up
+        
+        func getImage() -> UIImage {
+            switch self {
+            case .down:
+                return UIImage(named: "arrowDown")!
+            case .up:
+                return UIImage(named: "arrowUp")!
+            }
+        }
     }
     
-    private let mainView = MainTableView()
+    private let mainView = ListTableView()
     private let server = Server()
     private var model: [Deal] = []
     private var currentSorting: CurrentSorting = .down
@@ -23,10 +32,44 @@ class ViewController: UIViewController {
     }
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
         
         navigationItem.title = "Deals"
+        
+        setup()
+        fetchData()
+    }
+}
+
+
+//MARK: - UITableViewDataSource, UITableViewDelegate
+
+extension DealViewController: UITableViewDataSource, UITableViewDelegate {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return model.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: DealCell.reuseIidentifier, for: indexPath) as! DealCell
+        cell.configure(with: model[indexPath.row])
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: HeaderCell.reuseIidentifier) as! HeaderCell
+        return cell
+    }
+}
+
+//MARK: - Private extension
+
+private extension DealViewController {
+    
+    func setup() {
         
         mainView.tableView.register(UINib(nibName: DealCell.reuseIidentifier, bundle: nil), forCellReuseIdentifier: DealCell.reuseIidentifier)
         mainView.tableView.register(UINib(nibName: HeaderCell.reuseIidentifier, bundle: nil), forHeaderFooterViewReuseIdentifier: HeaderCell.reuseIidentifier)
@@ -38,13 +81,9 @@ class ViewController: UIViewController {
         mainView.filterPanel.selectedSegmentIndex = 0
         
         mainView.sortingButton.addTarget(self, action: #selector(sortingButtonTapped), for: .touchUpInside)
-        
-        fetchData()
     }
     
-    //MARK: - Actions
-    
-    private func fetchData() {
+    func fetchData() {
         server.subscribeToDeals { deals in
             self.model.append(contentsOf: deals)
             self.sortModel()
@@ -52,7 +91,7 @@ class ViewController: UIViewController {
         }
     }
     
-    private func sortModel() {
+    func sortModel() {
         
         switch (mainView.filterPanel.selectedSegmentIndex, currentSorting) {
         case (0, .up):
@@ -80,57 +119,35 @@ class ViewController: UIViewController {
         }
     }
     
-    @objc private func segmentChanged(_ sender: UISegmentedControl) {
+    @objc  func segmentChanged(_ sender: UISegmentedControl) {
         
         changeSortingDirection()
     }
     
-    @objc private func segmentTapped(_ sender: UISegmentedControl) {
+    @objc  func segmentTapped(_ sender: UISegmentedControl) {
         
         changeSortingDirection()
     }
     
-    @objc private func sortingButtonTapped() {
+    @objc  func sortingButtonTapped() {
         
         changeSortingDirection()
     }
     
-    private func changeSortingDirection() {
+    func changeSortingDirection() {
         
         toggleSortingOrder()
         sortModel()
         mainView.tableView.reloadData()
     }
     
-    private func toggleSortingOrder() {
+    func toggleSortingOrder() {
         
         currentSorting = (currentSorting == .down) ? .up : .down
-        let currentImage = (currentSorting == .up) ? UIImage(named: "arrowUp") : UIImage(named: "arrowDown")
-        mainView.sortingButton.setImage(currentImage, for: .normal)
+  
+        mainView.sortingButton.setImage(currentSorting.getImage(), for: .normal)
     }
+    
 }
 
-
-//MARK: - UITableViewDataSource, UITableViewDelegate
-
-extension ViewController: UITableViewDataSource, UITableViewDelegate {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return model.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: DealCell.reuseIidentifier, for: indexPath) as! DealCell
-        cell.configure(with: model[indexPath.row])
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: HeaderCell.reuseIidentifier) as! HeaderCell
-        return cell
-    }
-}
 

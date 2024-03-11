@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class MainTableView: UIView {
+class ListTableView: UIView {
     
     //MARK: - Properties
     
@@ -24,7 +24,6 @@ class MainTableView: UIView {
     
     let sortingButton: UIButton = {
         let obj = UIButton()
-        
         obj.layer.backgroundColor = UIColor.gray.cgColor
         obj.layer.cornerRadius = 10
         obj.setImage(UIImage(named: "arrowDown"), for: .normal)
@@ -51,8 +50,6 @@ class MainTableView: UIView {
         addSubview(filterPanel)
         addSubview(sortingButton)
         
-       
-        
         filterPanel.insertSegment(withTitle: "Date", at: 0, animated: true)
         filterPanel.insertSegment(withTitle: "Instrument", at: 1, animated: true)
         filterPanel.insertSegment(withTitle: "Price", at: 2, animated: true)
@@ -60,7 +57,6 @@ class MainTableView: UIView {
         filterPanel.insertSegment(withTitle: "Side", at: 4, animated: true)
         filterPanel.backgroundColor = .black
 
-        
         filterPanel.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview().inset(50)
@@ -80,5 +76,4 @@ class MainTableView: UIView {
             make.top.equalTo(filterPanel.snp.bottom)
         }
     }
- 
 }

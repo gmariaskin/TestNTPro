@@ -15,7 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
       
       guard let windowScene = (scene as? UIWindowScene) else { return }
-      let navVC = UINavigationController(rootViewController: ViewController())
+      let navVC = UINavigationController(rootViewController: DealViewController())
       navVC.navigationBar.tintColor = .black
       navVC.navigationBar.isTranslucent = true
       window = UIWindow(windowScene: windowScene)
