@@ -23,8 +23,6 @@ class DealListViewController: UIViewController {
     private var model: [Deal] = []
     private var currentSorting: CurrentSorting = .down
     
-    
-    
     //MARK: - Lifecycle
     
     override func loadView() {
@@ -119,17 +117,17 @@ private extension DealListViewController {
         }
     }
     
-    @objc  func segmentChanged(_ sender: UISegmentedControl) {
+    @objc func segmentChanged(_ sender: UISegmentedControl) {
         
         changeSortingDirection()
     }
     
-    @objc  func segmentTapped(_ sender: UISegmentedControl) {
+    @objc func segmentTapped(_ sender: UISegmentedControl) {
         
         changeSortingDirection()
     }
     
-    @objc  func sortingButtonTapped() {
+    @objc func sortingButtonTapped() {
         
         changeSortingDirection()
     }
