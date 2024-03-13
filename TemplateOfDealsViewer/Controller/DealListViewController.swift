@@ -23,7 +23,25 @@ class DealListViewController: UIViewController {
     private var model: [Deal] = []
     private var currentSorting: CurrentSorting = .down
     
+    // Sorting UI elements are diabled when data is fetching
+    
+    private var isFetchingData: Bool = false {
+        didSet {
+            mainView.filterPanel.isEnabled = !isFetchingData
+            mainView.sortingButton.isEnabled = !isFetchingData
+        }
+    }
+    
     //MARK: - Lifecycle
+    
+    init() {
+        isFetchingData = false
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func loadView() {
         view = mainView
@@ -65,6 +83,8 @@ extension DealListViewController: UITableViewDataSource, UITableViewDelegate {
 
 //MARK: - Private extension
 
+
+
 private extension DealListViewController {
     
     func setup() {
@@ -82,53 +102,73 @@ private extension DealListViewController {
     }
     
     func fetchData() {
+        
+       self.isFetchingData = true
         server.subscribeToDeals { deals in
+       
             self.model.append(contentsOf: deals)
             self.sortModel()
             self.mainView.tableView.reloadData()
+            self.isFetchingData = false
         }
     }
     
     func sortModel() {
         
-        switch (mainView.filterPanel.selectedSegmentIndex, currentSorting) {
-        case (0, .up):
-            model.sort(by: {$0.dateModifier < $1.dateModifier})
-        case (0, .down):
-            model.sort(by: {$0.dateModifier > $1.dateModifier})
-        case (1, .up):
-            model.sort(by: {$0.instrumentName < $1.instrumentName})
-        case (1, .down):
-            model.sort(by: {$0.instrumentName > $1.instrumentName})
-        case (2, .up):
-            model.sort(by: {$0.price < $1.price})
-        case (2, .down):
-            model.sort(by: {$0.price > $1.price})
-        case (3, .up):
-            model.sort(by: {$0.amount < $1.amount})
-        case (3, .down):
-            model.sort(by: {$0.amount > $1.amount})
-        case (4, .up):
-            model.sort(by: {$0.side < $1.side})
-        case (4, .down):
-            model.sort(by: {$0.side > $1.side})
-        default:
-            break
+        // Checking if data for sorting exists
+        
+        guard model.count >= 2 else {
+            print ("Model array contains less than 2 elements")
+            return
         }
+            switch (mainView.filterPanel.selectedSegmentIndex, currentSorting) {
+            case (0, .up):
+                model.sort(by: {$0.dateModifier < $1.dateModifier})
+            case (0, .down):
+                model.sort(by: {$0.dateModifier > $1.dateModifier})
+            case (1, .up):
+                model.sort(by: {$0.instrumentName < $1.instrumentName})
+            case (1, .down):
+                model.sort(by: {$0.instrumentName > $1.instrumentName})
+            case (2, .up):
+                model.sort(by: {$0.price < $1.price})
+            case (2, .down):
+                model.sort(by: {$0.price > $1.price})
+            case (3, .up):
+                model.sort(by: {$0.amount < $1.amount})
+            case (3, .down):
+                model.sort(by: {$0.amount > $1.amount})
+            case (4, .up):
+                model.sort(by: {$0.side < $1.side})
+            case (4, .down):
+                model.sort(by: {$0.side > $1.side})
+            default:
+                break
+            }
+        
     }
     
     @objc func segmentChanged(_ sender: UISegmentedControl) {
         
+        guard !isFetchingData else {
+                  return
+              }
         changeSortingDirection()
     }
     
     @objc func segmentTapped(_ sender: UISegmentedControl) {
         
+        guard !isFetchingData else {
+                  return
+              }
         changeSortingDirection()
     }
     
     @objc func sortingButtonTapped() {
         
+        guard !isFetchingData else {
+                  return
+              }
         changeSortingDirection()
     }
     
